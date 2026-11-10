@@ -1,0 +1,68 @@
+name: Refresh Profile Cards
+
+on:
+  schedule:
+    # Run every day at 03:00 UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:   # allow manual runs
+
+permissions:
+  contents: write
+
+jobs:
+  build-cards:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 2. Set up Python ───────────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # ── 3. Install deps ────────────────────────────────────────────────────
+      - name: Install dependencies
+        run: pip install fonttools brotli requests
+
+      # ── 4. Fetch contribution data via GitHub API ──────────────────────────
+      - name: Fetch contribution data
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: sarthaktanwal7-hue
+        run: python3 fetch_data.py
+
+      # ── 5. Download latest avatar ──────────────────────────────────────────
+      - name: Download avatar
+        run: |
+          curl -sL -o data/avatar.jpg \
+            "https://avatars.githubusercontent.com/u/335846994?v=4&s=400"
+
+      # ── 6. Download Space Grotesk font ─────────────────────────────────────
+      - name: Download fonts
+        run: |
+          mkdir -p /tmp/fonts
+          curl -sL -o /tmp/SpaceGrotesk-VF.ttf \
+            "https://github.com/floriankarsten/space-grotesk/releases/download/3.0.1/SpaceGrotesk-Regular.ttf" \
+            || true
+          curl -sL -o /tmp/SpaceGrotesk-Bold.ttf \
+            "https://github.com/floriankarsten/space-grotesk/releases/download/3.0.1/SpaceGrotesk-Bold.ttf" \
+            || true
+
+      # ── 7. Generate cards ──────────────────────────────────────────────────
+      - name: Generate SVG cards
+        run: python3 generate_cards.py
+
+      # ── 8. Commit & push ───────────────────────────────────────────────────
+      - name: Commit updated cards
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cards/ README.md data/contributions.json
+          git diff --staged --quiet || git commit -m "chore: refresh profile cards [skip ci]"
+          git push

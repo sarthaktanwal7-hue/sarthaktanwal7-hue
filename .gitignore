@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Font temp files
+/tmp/
+
+# macOS
+.DS_Store
+
+# Secrets — never commit these
+.env
+secrets.txt
