@@ -7,10 +7,10 @@
 
 <img src="cards/stats.svg" width="100%" alt="Contribution statistics"/>
 
-<img src="cards/repo_sarthaktanwal7-hue.svg" width="100%" alt="sarthaktanwal7-hue repo card"/>
-<img src="cards/repo_SPAR.svg" width="100%" alt="SPAR repo card"/>
-<img src="cards/repo_Robo-Sumo.svg" width="100%" alt="Robo-Sumo repo card"/>
+<img src="cards/repo_sarthak_tanwal7-hue.svg" width="100%" alt="sarthak_tanwal7-hue repo card"/>
+<img src="cards/repo_dsa-basics-.svg" width="100%" alt="dsa-basics- repo card"/>
 <img src="cards/repo_smart-services-backend.svg" width="100%" alt="smart-services-backend repo card"/>
+<img src="cards/repo_CR7.svg" width="100%" alt="CR7 repo card"/>
 
 <img src="cards/contrib_graph.svg" width="100%" alt="Contribution graph"/>
 

@@ -1,56 +1,92 @@
 {
   "username": "sarthaktanwal7-hue",
-  "generated_at": "2026-11-10T07:52:24Z",
-  "streak": 3,
-  "active_days": 12,
+  "generated_at": "2026-11-11T10:23:36.859652Z",
+  "streak": 0,
+  "active_days": 6,
   "busiest_day": "Saturday",
-  "total_contributions": 47,
+  "total_contributions": 16,
   "monthly": [
-    {"month": "Jan", "count": 0},
-    {"month": "Feb", "count": 0},
-    {"month": "Mar", "count": 0},
-    {"month": "Apr", "count": 0},
-    {"month": "May", "count": 0},
-    {"month": "Jun", "count": 0},
-    {"month": "Jul", "count": 0},
-    {"month": "Aug", "count": 0},
-    {"month": "Sep", "count": 8},
-    {"month": "Oct", "count": 29},
-    {"month": "Nov", "count": 10},
-    {"month": "Dec", "count": 0}
+    {
+      "month": "Jan",
+      "count": 0
+    },
+    {
+      "month": "Feb",
+      "count": 0
+    },
+    {
+      "month": "Mar",
+      "count": 0
+    },
+    {
+      "month": "Apr",
+      "count": 0
+    },
+    {
+      "month": "May",
+      "count": 0
+    },
+    {
+      "month": "Jun",
+      "count": 0
+    },
+    {
+      "month": "Jul",
+      "count": 0
+    },
+    {
+      "month": "Aug",
+      "count": 0
+    },
+    {
+      "month": "Sep",
+      "count": 0
+    },
+    {
+      "month": "Oct",
+      "count": 4
+    },
+    {
+      "month": "Nov",
+      "count": 12
+    },
+    {
+      "month": "Dec",
+      "count": 0
+    }
   ],
   "repos": [
     {
-      "name": "sarthaktanwal7-hue",
-      "description": "✨ GitHub Profile README",
-      "language": "SVG",
+      "name": "sarthak_tanwal7-hue",
+      "description": "",
+      "language": "Unknown",
       "stars": 0,
       "forks": 0,
-      "url": "https://github.com/sarthaktanwal7-hue/sarthaktanwal7-hue"
+      "url": "https://github.com/sarthaktanwal7-hue/sarthak_tanwal7-hue"
     },
     {
-      "name": "SPAR",
-      "description": "🤖 Smart Personal AI Robotic Companion for elderly assistance",
+      "name": "dsa-basics-",
+      "description": "",
       "language": "Python",
       "stars": 0,
       "forks": 0,
-      "url": "https://github.com/sarthaktanwal7-hue/SPAR"
-    },
-    {
-      "name": "Robo-Sumo",
-      "description": "⚡ Autonomous competitive sumo robot with sensors & motor control",
-      "language": "C++",
-      "stars": 0,
-      "forks": 0,
-      "url": "https://github.com/sarthaktanwal7-hue/Robo-Sumo"
+      "url": "https://github.com/sarthaktanwal7-hue/dsa-basics-"
     },
     {
       "name": "smart-services-backend",
-      "description": "🔧 Backend services for smart applications",
+      "description": "",
       "language": "Python",
       "stars": 0,
       "forks": 0,
       "url": "https://github.com/sarthaktanwal7-hue/smart-services-backend"
+    },
+    {
+      "name": "CR7",
+      "description": "",
+      "language": "Unknown",
+      "stars": 0,
+      "forks": 0,
+      "url": "https://github.com/sarthaktanwal7-hue/CR7"
     }
   ]
 }
