@@ -9,7 +9,7 @@ Usage:
     STATIC=1 python3 generate_cards.py # static/final-frame mode (for screenshots)
 
 Cards produced in cards/:
-    hero.svg          — name + tagline + real GitHub avatar
+    hero.svg          — name + tagline + dotted circular GitHub avatar
     links.svg         — three linked tiles (GitHub / LinkedIn / Email)
     stats.svg         — contributions chart + streak / active days / busiest day
     repo_<name>.svg   — one card per featured repo
@@ -29,45 +29,76 @@ ROOT      = pathlib.Path(__file__).parent
 CARDS_DIR = ROOT / "cards"
 DATA_FILE = ROOT / "data" / "contributions.json"
 AVATAR_FILE     = ROOT / "data" / "avatar.jpg"
-AVATAR_WEBP     = ROOT / "data" / "avatar.webp"   # pre-processed circular portrait
+AVATAR_WEBP     = ROOT / "data" / "avatar.webp"   # original/pre-processed source portrait
+AVATAR_DOTTED   = ROOT / "data" / "avatar-dotted.webp"  # generated halftone portrait
 
 
 def prepare_avatar(src: pathlib.Path, size: int = 460) -> pathlib.Path:
     """
-    Convert any source avatar into a crisp circular WebP using Pillow:
-      - Lanczos upscale to `size`×`size`
-      - Unsharp-mask sharpening to remove JPEG softness
-      - 4× super-sampled circular alpha mask (anti-aliased edge)
-    Returns path to the WebP, caching if already fresh.
+    Create a circular, coloured halftone portrait from the source avatar.
+    Each sampled photo cell becomes a crisp dot; darker areas use larger dots
+    to preserve facial detail. The separate output file avoids reusing the old
+    smooth avatar.webp cache.
     """
-    out = AVATAR_WEBP
-    # Return cached version if it's newer than the source
+    out = AVATAR_DOTTED
     if out.exists() and src.exists() and out.stat().st_mtime >= src.stat().st_mtime:
         return out
 
     try:
-        from PIL import Image, ImageFilter, ImageDraw as ID
-        import io
+        from PIL import Image, ImageFilter, ImageDraw, ImageChops
     except ImportError:
-        return src  # Pillow not installed — fall back to raw JPEG
+        print("  ! Pillow is missing; using the source avatar without the dotted effect")
+        return src
 
     img = Image.open(src).convert("RGBA")
-    img = img.resize((size, size), Image.LANCZOS)
+    img = img.resize((size, size), Image.Resampling.LANCZOS)
     img = img.filter(ImageFilter.UnsharpMask(radius=1.0, percent=110, threshold=2))
 
-    # 4× super-sampled circle mask for smooth anti-aliased edge
-    ms = size * 4
-    mask = Image.new("L", (ms, ms), 0)
-    ID.Draw(mask).ellipse((0, 0, ms, ms), fill=255)
-    mask = mask.resize((size, size), Image.LANCZOS)
+    # Work from a small grid of averaged pixels, then draw clean circles.
+    spacing = 7
+    grid_size = max(1, size // spacing)
+    sampled = img.resize((grid_size, grid_size), Image.Resampling.BOX)
+    pixels = sampled.load()
 
     result = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    result.paste(img, (0, 0), mask)
+    draw = ImageDraw.Draw(result)
 
-    buf = io.BytesIO()
-    result.save(buf, format="WEBP", quality=92, method=4)
-    buf.seek(0)
-    out.write_bytes(buf.read())
+    for gy in range(grid_size):
+        for gx in range(grid_size):
+            r, g, b, a = pixels[gx, gy]
+            if a < 24:
+                continue
+
+            # Darker photo regions receive larger dots, like a halftone print.
+            luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.0
+            radius = 0.9 + (1.0 - luminance) * 2.25
+
+            # Slightly enrich the original photo colours for a vivid dot portrait.
+            r = min(255, int(r * 1.08))
+            g = min(255, int(g * 1.08))
+            b = min(255, int(b * 1.08))
+            cx = gx * spacing + spacing / 2
+            cy = gy * spacing + spacing / 2
+
+            # Keep every dot inside the circular portrait boundary.
+            if (cx - size / 2) ** 2 + (cy - size / 2) ** 2 > (size / 2 - 2) ** 2:
+                continue
+
+            draw.ellipse(
+                (cx - radius, cy - radius, cx + radius, cy + radius),
+                fill=(r, g, b, a)
+            )
+
+    # Smooth circular alpha edge, supersampled for clean rendering.
+    scale = 4
+    mask = Image.new("L", (size * scale, size * scale), 0)
+    ImageDraw.Draw(mask).ellipse((0, 0, size * scale - 1, size * scale - 1), fill=255)
+    mask = mask.resize((size, size), Image.Resampling.LANCZOS)
+    result.putalpha(ImageChops.multiply(result.getchannel("A"), mask))
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    result.save(out, format="WEBP", quality=95, method=6)
+    print(f"  ↳ Created dotted portrait: {out.name}")
     return out
 
 CARDS_DIR.mkdir(exist_ok=True)
@@ -272,7 +303,7 @@ def save(svg: ET.Element, path: pathlib.Path) -> None:
     print(f"  ✓  {path.name}")
 
 # ════════════════════════════════════════════════════════════════════════════════
-# CARD 1 — HERO  (high-quality circular portrait)
+# CARD 1 — HERO  (circular halftone/dotted portrait)
 # ════════════════════════════════════════════════════════════════════════════════
 def card_hero() -> None:
     W, H    = 820, 220
@@ -342,7 +373,8 @@ def card_hero() -> None:
             values="0.5;1;0.5", dur="2.8s", repeatCount="indefinite")
 
     # ── Avatar — prefer pre-processed circular WebP, fall back to raw JPEG ───
-    av_src = prepare_avatar(AVATAR_FILE) if AVATAR_FILE.exists() else AVATAR_WEBP
+    avatar_source = AVATAR_FILE if AVATAR_FILE.exists() else AVATAR_WEBP
+    av_src = prepare_avatar(avatar_source) if avatar_source.exists() else AVATAR_DOTTED
     if av_src.exists():
         mime = "image/webp" if av_src.suffix == ".webp" else "image/jpeg"
         ET.SubElement(svg, "image",
