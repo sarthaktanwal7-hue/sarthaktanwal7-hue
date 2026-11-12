@@ -28,7 +28,47 @@ STATIC    = os.environ.get("STATIC", "0") == "1"
 ROOT      = pathlib.Path(__file__).parent
 CARDS_DIR = ROOT / "cards"
 DATA_FILE = ROOT / "data" / "contributions.json"
-AVATAR_FILE = ROOT / "data" / "avatar.jpg"
+AVATAR_FILE     = ROOT / "data" / "avatar.jpg"
+AVATAR_WEBP     = ROOT / "data" / "avatar.webp"   # pre-processed circular portrait
+
+
+def prepare_avatar(src: pathlib.Path, size: int = 460) -> pathlib.Path:
+    """
+    Convert any source avatar into a crisp circular WebP using Pillow:
+      - Lanczos upscale to `size`×`size`
+      - Unsharp-mask sharpening to remove JPEG softness
+      - 4× super-sampled circular alpha mask (anti-aliased edge)
+    Returns path to the WebP, caching if already fresh.
+    """
+    out = AVATAR_WEBP
+    # Return cached version if it's newer than the source
+    if out.exists() and src.exists() and out.stat().st_mtime >= src.stat().st_mtime:
+        return out
+
+    try:
+        from PIL import Image, ImageFilter, ImageDraw as ID
+        import io
+    except ImportError:
+        return src  # Pillow not installed — fall back to raw JPEG
+
+    img = Image.open(src).convert("RGBA")
+    img = img.resize((size, size), Image.LANCZOS)
+    img = img.filter(ImageFilter.UnsharpMask(radius=1.0, percent=110, threshold=2))
+
+    # 4× super-sampled circle mask for smooth anti-aliased edge
+    ms = size * 4
+    mask = Image.new("L", (ms, ms), 0)
+    ID.Draw(mask).ellipse((0, 0, ms, ms), fill=255)
+    mask = mask.resize((size, size), Image.LANCZOS)
+
+    result = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    result.paste(img, (0, 0), mask)
+
+    buf = io.BytesIO()
+    result.save(buf, format="WEBP", quality=92, method=4)
+    buf.seek(0)
+    out.write_bytes(buf.read())
+    return out
 
 CARDS_DIR.mkdir(exist_ok=True)
 
@@ -232,91 +272,146 @@ def save(svg: ET.Element, path: pathlib.Path) -> None:
     print(f"  ✓  {path.name}")
 
 # ════════════════════════════════════════════════════════════════════════════════
-# CARD 1 — HERO
+# CARD 1 — HERO  (high-quality circular portrait)
 # ════════════════════════════════════════════════════════════════════════════════
 def card_hero() -> None:
-    W, H = 800, 200
+    W, H    = 820, 220
+    AV_SIZE = 170          # avatar diameter in SVG units
+    AV_CX   = 24 + AV_SIZE // 2
+    AV_CY   = H // 2
+
     svg = make_svg(W, H)
-    add_defs_gradient(svg)
-    
-    # avatar clip path
-    defs = svg.find("defs") or ET.SubElement(svg, "defs")
-    clip = ET.SubElement(defs, "clipPath", id="avatarClip")
-    ET.SubElement(clip, "circle", cx="96", cy="100", r="72")
 
-    # Gradient ring behind avatar
-    ring_grad = ET.SubElement(defs, "linearGradient", id="ringGrad",
+    # ── defs ─────────────────────────────────────────────────────────────────
+    defs = ET.SubElement(svg, "defs")
+
+    # Name gradient
+    lg_name = ET.SubElement(defs, "linearGradient", id="nameGrad",
+        x1="0", y1="0", x2="1", y2="0")
+    ET.SubElement(lg_name, "stop", offset="0%").set("stop-color", "#ffffff")
+    s2 = ET.SubElement(lg_name, "stop", offset="100%")
+    s2.set("stop-color", CYAN)
+    if not STATIC:
+        ET.SubElement(s2, "animate",
+            attributeName="stop-color",
+            values=f"{CYAN};{PURPLE};{CYAN}",
+            dur="4s", repeatCount="indefinite")
+
+    # Ring gradient
+    lg_ring = ET.SubElement(defs, "linearGradient", id="ringGrad",
         x1="0", y1="0", x2="1", y2="1")
-    ET.SubElement(ring_grad, "stop", offset="0%").set("stop-color", PURPLE)
-    ET.SubElement(ring_grad, "stop", offset="100%").set("stop-color", CYAN)
+    ET.SubElement(lg_ring, "stop", offset="0%").set("stop-color", PURPLE)
+    ET.SubElement(lg_ring, "stop", offset="100%").set("stop-color", CYAN)
 
-    add_style(svg)
+    # Radial glow behind avatar
+    rg = ET.SubElement(defs, "radialGradient", id="avGlow",
+        cx=str(AV_CX), cy=str(AV_CY),
+        r=str(AV_SIZE // 2 + 40),
+        gradientUnits="userSpaceOnUse")
+    ET.SubElement(rg, "stop", offset="0%").set("stop-color", PURPLE)
+    ET.SubElement(rg, "stop", offset="100%").set("stop-color", BG)
+
+    # Clip path (SVG clip as safety net — the WebP itself is already circular)
+    clip = ET.SubElement(defs, "clipPath", id="avatarClip")
+    ET.SubElement(clip, "circle",
+        cx=str(AV_CX), cy=str(AV_CY), r=str(AV_SIZE // 2))
+
+    # Inline styles
+    style = ET.SubElement(svg, "style")
+    style.text = anim_css() + """
+@media (prefers-reduced-motion:reduce) {
+  * { animation:none!important; }
+}"""
+
     card_bg(svg, W, H)
 
-    # Avatar ring (animated glow)
+    # Soft glow halo behind avatar
+    ET.SubElement(svg, "circle",
+        cx=str(AV_CX), cy=str(AV_CY),
+        r=str(AV_SIZE // 2 + 40),
+        fill="url(#avGlow)", opacity="0.22")
+
+    # Gradient ring
     ring = ET.SubElement(svg, "circle",
-        cx="96", cy="100", r="76",
-        fill="none", stroke=f"url(#ringGrad)", **{"stroke-width": "3"})
+        cx=str(AV_CX), cy=str(AV_CY),
+        r=str(AV_SIZE // 2 + 4),
+        fill="none", stroke="url(#ringGrad)", **{"stroke-width": "3.5"})
     if not STATIC:
         ET.SubElement(ring, "animate",
             attributeName="stroke-opacity",
-            values="0.6;1;0.6", dur="3s", repeatCount="indefinite")
+            values="0.5;1;0.5", dur="2.8s", repeatCount="indefinite")
 
-    # Avatar image
-    if AVATAR_FILE.exists():
-        avatar_b64 = b64_file(AVATAR_FILE)
-        mime = "image/jpeg"
-        img = ET.SubElement(svg, "image",
-            x="24", y="28", width="144", height="144",
-            **{"clip-path": "url(#avatarClip)",
-               "href": f"data:{mime};base64,{avatar_b64}",
-               "preserveAspectRatio": "xMidYMid slice"})
+    # ── Avatar — prefer pre-processed circular WebP, fall back to raw JPEG ───
+    av_src = prepare_avatar(AVATAR_FILE) if AVATAR_FILE.exists() else AVATAR_WEBP
+    if av_src.exists():
+        mime = "image/webp" if av_src.suffix == ".webp" else "image/jpeg"
+        ET.SubElement(svg, "image",
+            x=str(AV_CX - AV_SIZE // 2),
+            y=str(AV_CY - AV_SIZE // 2),
+            width=str(AV_SIZE), height=str(AV_SIZE),
+            **{
+                "clip-path": "url(#avatarClip)",
+                "href": f"data:{mime};base64,{b64_file(av_src)}",
+                "preserveAspectRatio": "xMidYMid slice",
+                "image-rendering": "auto",
+            })
     else:
-        # Fallback placeholder circle
-        ET.SubElement(svg, "circle", cx="96", cy="100", r="72",
-            fill="#1a1b2e")
-        t = ET.SubElement(svg, "text", x="96", y="108",
-            **{"text-anchor": "middle", "font-size": "40",
-               "fill": PURPLE, "font-family": FONT_STACK})
-        t.text = "ST"
+        # Initials fallback
+        ET.SubElement(svg, "circle",
+            cx=str(AV_CX), cy=str(AV_CY),
+            r=str(AV_SIZE // 2), fill="#1a1b2e")
+        ET.SubElement(svg, "text",
+            x=str(AV_CX), y=str(AV_CY + 14),
+            **{"text-anchor": "middle", "font-size": "52",
+               "fill": PURPLE, "font-family": FONT_STACK}).text = "ST"
 
-    # Text group
+    # ── Text group (slide-up on load) ────────────────────────────────────────
     tg = ET.SubElement(svg, "g")
     smil_slide_up(tg, delay=0.1)
 
+    tx = AV_CX + AV_SIZE // 2 + 28   # text starts right of avatar
+
     # Name
-    name_el = ET.SubElement(tg, "text",
-        x="200", y="80",
-        **{"font-family": FONT_STACK,
-           "font-size": "36", "font-weight": "700",
-           "fill": f"url(#headGrad)"})
-    name_el.text = "Sarthak Tanwal"
+    ET.SubElement(tg, "text",
+        x=str(tx), y="82",
+        **{"font-family": FONT_STACK, "font-size": "38",
+           "font-weight": "700", "fill": "url(#nameGrad)"}).text = "Sarthak Tanwal"
+
+    # Cyan rule
+    ET.SubElement(tg, "rect",
+        x=str(tx), y="92", width="265", height="1.5",
+        fill=CYAN, opacity="0.4", rx="1")
 
     # Title
-    title_el = ET.SubElement(tg, "text",
-        x="200", y="112",
-        **{"font-family": FONT_STACK,
-           "font-size": "16", "font-weight": "400",
-           "fill": CYAN})
-    title_el.text = "CS & AI Student  ·  Aspiring Software Developer"
+    ET.SubElement(tg, "text",
+        x=str(tx), y="118",
+        **{"font-family": FONT_STACK, "font-size": "15",
+           "font-weight": "500", "fill": CYAN}).text = \
+        "CS & AI Student  ·  Aspiring Software Developer"
 
     # Tagline
-    tag_el = ET.SubElement(tg, "text",
-        x="200", y="142",
-        **{"font-family": FONT_STACK,
-           "font-size": "14", "font-weight": "400",
-           "fill": MUTED})
-    tag_el.text = "Always curious, always experimenting, always building. 🚀"
+    ET.SubElement(tg, "text",
+        x=str(tx), y="150",
+        **{"font-family": FONT_STACK, "font-size": "13.5",
+           "font-weight": "400", "fill": MUTED,
+           "font-style": "italic"}).text = \
+        "Always curious, always experimenting, always building. 🚀"
 
-    # Sparkle dots (decorative)
+    # Sparkle dots
     if not STATIC:
-        for i, (sx, sy) in enumerate([(720,30),(750,55),(700,80),(760,100),(730,130)]):
+        for i, (sx, sy) in enumerate([(730,22),(762,44),(745,70),(775,92),(755,118),(785,142),(740,162)]):
             dot = ET.SubElement(svg, "circle",
-                cx=str(sx), cy=str(sy), r="2", fill=PURPLE)
+                cx=str(sx), cy=str(sy), r="2",
+                fill=PURPLE if i % 2 == 0 else CYAN, opacity="0")
             ET.SubElement(dot, "animate",
-                attributeName="opacity",
-                values="0;1;0", dur=f"{1.5 + i*0.3:.1f}s",
-                begin=f"{i*0.2:.1f}s",
+                attributeName="opacity", values="0;1;0",
+                begin=f"{0.3 + i*0.22:.2f}s",
+                dur=f"{1.4 + i*0.1:.1f}s",
+                repeatCount="indefinite")
+            ET.SubElement(dot, "animate",
+                attributeName="r", values="1.5;2.8;1.5",
+                begin=f"{0.3 + i*0.22:.2f}s",
+                dur=f"{1.4 + i*0.1:.1f}s",
                 repeatCount="indefinite")
 
     save(svg, CARDS_DIR / "hero.svg")

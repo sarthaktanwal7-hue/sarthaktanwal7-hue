@@ -28,7 +28,7 @@ jobs:
 
       # ── 3. Install deps ────────────────────────────────────────────────────
       - name: Install dependencies
-        run: pip install fonttools brotli requests
+        run: pip install fonttools brotli requests Pillow
 
       # ── 4. Fetch contribution data via GitHub API ──────────────────────────
       - name: Fetch contribution data
