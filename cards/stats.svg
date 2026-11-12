@@ -6,130 +6,70 @@
       <stop offset="100%" stop-color="#4fd1ff" />
     </linearGradient>
   </defs>
-  <style>
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes glow {
-  0%, 100% { opacity: 0.7; }
-  50%       { opacity: 1.0; }
-}
-@keyframes shimmer {
-  0%   { stop-color: #8b7bff; }
-  50%  { stop-color: #4fd1ff;   }
-  100% { stop-color: #8b7bff; }
-}
-@keyframes barGrow {
-  from { transform: scaleY(0); transform-origin: bottom; }
-  to   { transform: scaleY(1); transform-origin: bottom; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
-}
-</style>
+  <style />
   <rect width="800" height="240" rx="18" fill="#0d0e1f" stroke="#2a2650" stroke-width="1.5" />
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.20s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.20s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <text x="32" y="35" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#eef1ff" letter-spacing="1">CONTRIBUTIONS</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.40s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.40s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="32" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="50" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Jan</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.44s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.44s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="73" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="91" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Feb</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.48s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.48s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="114" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="132" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Mar</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.52s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.52s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="155" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="173" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Apr</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.56s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.56s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="196" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="214" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">May</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.60s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.60s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="237" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="255" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Jun</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.64s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.64s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="278" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="296" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Jul</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.68s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.68s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="319" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="337" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Aug</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.72s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.72s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="360" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="378" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Sep</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.76s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.76s" dur="0.60s" fill="freeze" additive="sum" />
-    <rect x="401" y="160" width="37" height="50" rx="3" fill="url(#barGrad)">
-      <animate attributeName="height" from_="0" to="50" begin="0.86s" dur="0.6s" fill="freeze" />
-      <animate attributeName="y" from_="210" to="160" begin="0.86s" dur="0.6s" fill="freeze" />
-    </rect>
+  <g>
+    <rect x="401" y="160" width="37" height="50" rx="3" fill="url(#barGrad)" />
     <text x="419" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Oct</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.80s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.80s" dur="0.60s" fill="freeze" additive="sum" />
-    <rect x="442" y="60" width="37" height="150" rx="3" fill="url(#barGrad)">
-      <animate attributeName="height" from_="0" to="150" begin="0.90s" dur="0.6s" fill="freeze" />
-      <animate attributeName="y" from_="210" to="60" begin="0.90s" dur="0.6s" fill="freeze" />
-    </rect>
+  <g>
+    <rect x="442" y="60" width="37" height="150" rx="3" fill="url(#barGrad)" />
     <text x="460" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Nov</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.84s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.84s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="483" y="207" width="37" height="3" rx="3" fill="#2a2650" />
     <text x="501" y="226" text-anchor="middle" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="10" fill="#9ea8c8">Dec</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.60s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.60s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="546" y="60" width="230" height="52" rx="10" fill="rgba(139,123,255,0.08)" stroke="#2a2650" stroke-width="1" />
     <text x="560" y="80" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="11" fill="#9ea8c8">🔥  Current Streak</text>
     <text x="560" y="100" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="18" font-weight="700" fill="#4fd1ff">0 days</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.75s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.75s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="546" y="125" width="230" height="52" rx="10" fill="rgba(139,123,255,0.08)" stroke="#2a2650" stroke-width="1" />
     <text x="560" y="145" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="11" fill="#9ea8c8">📅  Active Days</text>
     <text x="560" y="165" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="18" font-weight="700" fill="#4fd1ff">6 days</text>
   </g>
-  <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.90s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.90s" dur="0.60s" fill="freeze" additive="sum" />
+  <g>
     <rect x="546" y="190" width="230" height="52" rx="10" fill="rgba(139,123,255,0.08)" stroke="#2a2650" stroke-width="1" />
     <text x="560" y="210" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="11" fill="#9ea8c8">⚡  Busiest Day</text>
     <text x="560" y="230" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif" font-size="18" font-weight="700" fill="#4fd1ff">Saturday</text>
