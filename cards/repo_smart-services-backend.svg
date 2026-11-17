@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="120" viewBox="0 0 800 120" fill="none">
   <defs>
-    <linearGradient id="rGrad2" x1="0" y1="0" x2="1" y2="0">
+    <linearGradient id="rGrad3" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#ffffff" />
       <stop offset="100%" stop-color="#4fd1ff">
         <animate attributeName="stop-color" values="#4fd1ff;#8b7bff;#4fd1ff" dur="4s" repeatCount="indefinite" />
@@ -33,8 +33,8 @@
 </style>
   <rect width="800" height="120" rx="18" fill="#0d0e1f" stroke="#2a2650" stroke-width="1.5" />
   <g opacity="0">
-    <animate attributeName="opacity" from_="0" to="1" begin="0.50s" dur="0.60s" fill="freeze" />
-    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.50s" dur="0.60s" fill="freeze" additive="sum" />
+    <animate attributeName="opacity" from_="0" to="1" begin="0.65s" dur="0.60s" fill="freeze" />
+    <animateTransform attributeName="transform" type="translate" from_="0,16" to="0,0" begin="0.65s" dur="0.60s" fill="freeze" additive="sum" />
     <rect x="20" y="20" width="52" height="52" rx="12" fill="rgba(139,123,255,0.12)" stroke="#8b7bff" stroke-width="1" />
     <text x="46" y="52" text-anchor="middle" font-size="26" font-family="'Space Grotesk', 'Segoe UI', system-ui, sans-serif">🐍</text>
     <a href="https://github.com/sarthaktanwal7-hue/smart-services-backend" target="_blank">

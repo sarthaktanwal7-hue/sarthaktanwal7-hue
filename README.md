@@ -7,6 +7,7 @@
 
 <img src="cards/stats.svg" width="100%" alt="Contribution statistics"/>
 
+<img src="cards/repo_S-AI_diwali_homework.svg" width="100%" alt="S-AI_diwali_homework repo card"/>
 <img src="cards/repo_sarthak_tanwal7-hue.svg" width="100%" alt="sarthak_tanwal7-hue repo card"/>
 <img src="cards/repo_dsa-basics-.svg" width="100%" alt="dsa-basics- repo card"/>
 <img src="cards/repo_smart-services-backend.svg" width="100%" alt="smart-services-backend repo card"/>
